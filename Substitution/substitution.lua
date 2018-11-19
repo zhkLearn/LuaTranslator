@@ -27,6 +27,46 @@ function Literalize(str)
     return str:gsub("[%(%)%.%%%+%-%*%?%[%]%^%$]", function(c) return "%" .. c end)
 end
 
+
+-- Concat the contents of the parameter list,
+-- separated by the string delimiter (just like in perl)
+-- example: strjoin(", ", {"Anna", "Bob", "Charlie", "Dolores"})
+function strJoin(delimiter, list)
+   local len = getn(list)
+   if len == 0 then
+      return "" 
+   end
+   local string = list[1]
+   for i = 2, len do 
+      string = string .. delimiter .. list[i] 
+   end
+   return string
+end
+
+-- Split text into a list consisting of the strings in text,
+-- separated by strings matching delimiter (which may be a pattern). 
+-- example: strsplit(",%s*", "Anna, Bob, Charlie,Dolores")
+function strSplit(delimiter, text)
+	local list = {}
+	local pos = 1
+	if string.find("", delimiter, 1) then -- this would result in endless loops
+	  error("delimiter matches empty string!")
+	end
+	while 1 do
+		local first, last = string.find(text, delimiter, pos)
+		if first then -- found?
+			--table.insert(list, string.sub(text, pos, first-1))
+			list[#list + 1] = string.sub(text, pos, first-1)
+			pos = last+1
+		else
+			--table.insert(list, string.sub(text, pos))
+			list[#list + 1] = string.sub(text, pos)
+			break
+		end
+	end
+	return list
+end
+
 -- Print the Usage to the console
 function Usage()
   print("使用方法: lua.exe substitution.lua in.txt dictionary.txt out.txt")
@@ -70,7 +110,7 @@ function main()
         printf("输出文件 '%s' 已经存在！将被覆盖。\n", out_dest)
     end
 
-    printf("处理中...")
+    printf("处理中...\n")
 
     -- 读入原始文件
     local in_scource_handle = io.open(in_source, "rb")
@@ -78,6 +118,20 @@ function main()
     local in_source_length = in_scource_handle:seek("end")
     io.close(in_scource_handle)
 	
+	
+	local in_dict_handle = io.open(in_dictionary, "rb");
+    local in_dict_data   = in_dict_handle:read("*a")
+    io.close(in_dict_handle)
+	
+	for _, line in pairs(strSplit('\n', in_dict_data)) do
+		local vects = strSplit('|', line)
+		if #vects == 2 then
+			--print(vects[1], vects[2])
+			in_source_data = in_source_data:gsub(Literalize(vects[1]), vects[2])
+		end
+	end
+
+	--[[
     -- 读入字典文件
     -- 替换
 	local in_dict_handle = io.open(in_dictionary);
@@ -91,6 +145,7 @@ function main()
 		end
     end
 	io.close(in_dict_handle)
+	]]--
 	
     -- 输出
     local out_dest_handle = io.open(out_dest, "wb+")
