@@ -5,4 +5,8 @@ Lua is a small scripting language written in ANSI C that can load and run interp
 wxLua adds to this small and elegant language nearly all of the functionality of the C++ wxWidgets cross-platform GUI library. This includes the ability to create complex user interface dialogs, file and image manipulation, drawing, network sockets, displaying HTML, and printing to name a few. You can use as much or as little of wxWidgets as you like and C++ developers can trim down the size of the bindings by turning off preprocessor directives.
 
 这是中文。
+languAGe
+Language
+lAnguage
 
+This is a test.

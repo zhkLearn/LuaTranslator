@@ -2,10 +2,15 @@
 wxLua is|脚本是
 wxLua|WXLUA
 scripts|SCRIPTS
-is|IS
+is |IS 
+this|THIS
 cross-platform|跨平台的
 中文|Chinese
 scripting language|脚本语言
+|ABC
+executable|
+language|语言
+
 
 
 
