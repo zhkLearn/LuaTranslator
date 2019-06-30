@@ -146,13 +146,15 @@ function main()
     local in_source_data   = in_scource_handle:read("*a")
     local in_source_length = in_scource_handle:seek("end")
     io.close(in_scource_handle)
-	
-	
+	printf("原始文件读入成功...\n")
+
     -- 读入字典文件
 	local in_dict_handle = io.open(in_dictionary, "rb");
     local in_dict_data   = in_dict_handle:read("*a")
     io.close(in_dict_handle)
+	printf("字典文件读入成功...\n")
 	
+	printf("处理中...\n")
     -- 替换
 	for _, line in pairs(strSplit('\n', in_dict_data)) do
 		local vects = strSplit('|', line)
@@ -164,6 +166,7 @@ function main()
 				in_source_data = in_source_data:gsub(case_insensitive_pattern(Literalize(vects[1])), vects[2])
 			end
 		end
+		
 	end
 
 	--[[

@@ -162,13 +162,34 @@ end
 print(in_source_data)
 
 
+local strTmp = string.match("  sadf", "(.*%S)")
+print(strTmp, strTmp:len())
+
+function test(...)
+	
+	print(select('#', ...))
+	
+end
+
+test(1, 2, 3, 4, 5)
 
 
+function getField(f)
+	local v = _G
+	for w in f:gmatch("[%w+]+") do
+		v = v[w]
+		if not v then
+			print(f .. " not exist in _G!")
+			break
+		end
+	end
+	
+	return v
+end 
 
+print(getField("io1.read1"))
 
+print(math.sin(math.pi/2))
 
-
-
-
-
+print(package.cpath)
 
