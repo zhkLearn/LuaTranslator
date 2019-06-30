@@ -101,6 +101,15 @@ function Usage()
   print("使用方法: lua.exe substitution.lua in.txt dictionary.txt out.txt")
 end
 
+function isFileValid(data, length)
+	if length < 3 or (string.byte(data, 1) ~= 0xEF and string.byte(data, 2) ~= 0xBB and string.byte(data, 3) ~= 0xBF) then
+		print("文件格式不对，需要带BOM的UTF-8格式的文件。")
+		return false
+	end
+	
+	return true
+end
+
 
 -- The main() program to run
 function main()
@@ -146,13 +155,24 @@ function main()
     local in_source_data   = in_scource_handle:read("*a")
     local in_source_length = in_scource_handle:seek("end")
     io.close(in_scource_handle)
-	printf("原始文件读入成功...\n")
+	if isFileValid(in_source_data, in_source_length) then
+		printf("原始文件读入成功...\n")
+	else
+		printf("原始文件读入失败！\n")
+		return
+	end
 
     -- 读入字典文件
 	local in_dict_handle = io.open(in_dictionary, "rb");
     local in_dict_data   = in_dict_handle:read("*a")
+    local in_dict_length = in_dict_handle:seek("end")
     io.close(in_dict_handle)
-	printf("字典文件读入成功...\n")
+	if isFileValid(in_dict_data, in_dict_length) then
+		printf("字典文件读入成功...\n")
+	else
+		printf("字典文件读入失败！\n")
+		return
+	end
 	
 	printf("处理中...\n")
     -- 替换
@@ -163,7 +183,7 @@ function main()
 			local valTrim = strTrim(vects[2])
 			--print(vects[1], vects[2])
 			if keyTrim:len() > 0 and valTrim:len() > 0 then
-				in_source_data = in_source_data:gsub(case_insensitive_pattern(Literalize(vects[1])), vects[2])
+				in_source_data = in_source_data:gsub(case_insensitive_pattern(Literalize(vects[1])), valTrim)
 			end
 		end
 		
